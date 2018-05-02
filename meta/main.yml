@@ -15,4 +15,3 @@ galaxy_info:
 dependencies:
   - {role: tersmitten.keepalived, version: v2.5.4}
   # List your role dependencies here, one per line.
-
