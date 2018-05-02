@@ -1,0 +1,3 @@
+---
+- src: tersmitten.keepalived
+  version: v2.5.4
