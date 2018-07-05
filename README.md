@@ -19,33 +19,71 @@ The role defines most of its variables in `defaults/main.yml`:
 Run with default vars:
 
 ```
-    - hosts: all
-      roles:
-        - role: entercloudsuite.keepalived
-          keepalived_options:
-            - name: log-detail
-          keepalived_vrrp_scripts:
-            chk_haproxy:
-              script: '/bin/pidof haproxy'
-              weight: 2
-              interval: 1
+---
 
-          keepalived_vrrp_instances:
-            VI_1:
-              interface: eth1 
-              state: MASTER
-              priority: 101
-              virtual_router_id: 51
+- name: KEEPALIVE_HAPROXY_IP_1_NODE_1
+  become: true
+  become_user: root
+  become_method: sudo
+  hosts: server_group_haproxy[0]
+  roles:
+    - role: entercloudsuite.keepalived
+      keepalived_options:
+        - name: log-detail
+      keepalived_vrrp_scripts:
+        chk_haproxy:
+          script: '/bin/pidof haproxy'
+          weight: 100
+          interval: 1
 
-              authentication:
-                auth_type: PASS
-                auth_pass: '4Apr3C*d'
+      keepalived_vrrp_instances:
+        VI_1:
+          interface: ens3
+          state: MASTER
+          priority: 110
+          virtual_router_id: 71
 
-              virtual_ipaddresses:
-                - '10.0.0.10/24 dev eth1 label eth1:1'
+          authentication:
+            auth_type: PASS
+            auth_pass: 'your_password' 
 
-              track_scripts:
-                - chk_haproxy
+          virtual_ipaddresses:
+            - '10.2.255.1 dev ens3 label ens3:1'
+
+          track_scripts:
+            - chk_haproxy
+
+- name: KEEPALIVE_HAPROXY_IP_1_NODE_2
+  become: true
+  become_user: root
+  become_method: sudo
+  hosts: server_group_haproxy[1]
+  roles:
+    - role: entercloudsuite.keepalived
+      keepalived_options:
+        - name: log-detail
+      keepalived_vrrp_scripts:
+        chk_haproxy:
+          script: '/bin/pidof haproxy'
+          weight: 100
+          interval: 1
+
+      keepalived_vrrp_instances:
+        VI_1:
+          interface: ens3
+          state: BACKUP
+          priority: 100
+          virtual_router_id: 71
+
+          authentication:
+            auth_type: PASS
+            auth_pass: 'your_password'
+
+          virtual_ipaddresses:
+            - '10.2.255.1 dev ens3 label ens3:1'
+
+          track_scripts:
+            - chk_haproxy
 ```
 
 ## Testing
