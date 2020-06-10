@@ -13,5 +13,5 @@ galaxy_info:
     - molecule
 
 dependencies:
-  - {role: oefenweb.keepalived, version: v3.0.0}
+  - {role: oefenweb.keepalived, version: v3.2.10}
   # List your role dependencies here, one per line.
